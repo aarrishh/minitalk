@@ -6,7 +6,7 @@
 /*   By: arimanuk <arimanuk@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/06/08 21:47:44 by arimanuk          #+#    #+#             */
-/*   Updated: 2025/06/11 18:32:34 by arimanuk         ###   ########.fr       */
+/*   Updated: 2025/06/11 21:03:11 by arimanuk         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -18,28 +18,6 @@ void	flag_handler(int signal)
 {
 	(void)signal;
 	g_bit_count = 1;
-}
-
-int	decimal_to_binary(char c, int pid)
-{
-	int i;
-	int bit;
-
-	printf("%c\n", c);
-	i = 7;
-	while (i >= 0)
-	{
-		bit = (c >> i) & 1;
-		if (bit == 1)
-			kill(pid, SIGUSR1);
-		else
-			kill(pid, SIGUSR2);
-		while(!g_bit_count)
-			usleep(100);
-		g_bit_count = 0;
-		i--;
-	}
-	return (0);
 }
 
 int	ft_atoi(const char *str)
@@ -72,11 +50,25 @@ int	ft_atoi(const char *str)
 void	send_massage(int pid, char *str)
 {
 	int i;
+	int j;
+	int bit;
 
 	i = 0;
 	while (str[i])
 	{
-		decimal_to_binary(str[i], pid);
+		j = 7;
+		while (j >= 0)
+		{
+			bit = (str[i] >> j) & 1;
+			if (bit == 1)
+				kill(pid, SIGUSR1);
+			else
+				kill(pid, SIGUSR2);
+			while(!g_bit_count)
+				usleep(100);
+			g_bit_count = 0;
+			j--;
+		}
 		i++;
 	}
 }
